@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+###昨天下雨了
+雨下的很大，很久,走没多久，鞋子就湿了
+
+-------------------------------------------------
+
+现在的天气反而蛮好的，有点云有点风，略微带着点清爽舒适的感觉，大一的时候自己写过这样子的话，**贫瘠的内心养不大一把可爱的笑声，阳台上，仰望星空，这寂寞而辽阔的孤独**
+总是有一段潜伏期，让自己什么都不想做，什么都不想去碰...昨天佳烯回学校了拿毕业证，在校门口碰面，一起吃了点东西，后来跟润宜三个人在地下铁拿了饮料就去翰墨池了。
+絮絮叨叨地聊了好一会
+下雨了
+
+----------
+再然后...师弟找我聚聚，在三饭二楼一起吃了章鱼小丸子，聊完之后又开始跟师弟两个人人一起去走了翰墨池，一天就这么过去了，感觉现在的我习惯性地会敲击键盘，习惯性地会告诉自己去做好一些东西，怎么说呢.........
+<b>Just like this</b>
+习惯性动作，我会点击一下：
+<a href="http://www.baidu.com"><b>试试做自己想做的，并且努力做好一下</b></a><br>
+
+-------------------------------------------------------------------------
+<b>tip</b>
+
+ <blockquote><p><b>《僧人与哲学家》 里面说，虽然很多人在自己的领域中都是天才，但才华未必使他们在生活达到人性的完美。具有那么多的才华，那么多的知识和艺术性的技巧，并不能让他们成为好的人一位伟大的诗人可能是一个混蛋，一位伟大的科学家可能对自己很不满，一位艺术家可能充满着自恋的骄傲。各种可能，好的坏的，都存在。</b></p>
+</blockquote>
+
+
+
+------------------------
+
+
+
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "150624.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
