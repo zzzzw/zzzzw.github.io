@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+严格意义上来说，这是我做的第二个项目，引用项目经理的一句话，本身是千万级别的项目，却做成百万级别的单子</br>主要有几个版块</br>
+>工程管理，供应链，采购，核算（费用，收付）以及OA系统对接<br>
+
+其中工程管理模板全部二开，这套业务是比较不错的，尤其是设计思路，跟具体的字段逻辑，现在想想如果整个细致的方案从构思到实现，如果是我来设计表结构跟ui以及开发文档的话，需要，保守估计需要一个月的时间。<br>
+
+-------------------------------
+
+涉及到的nc技术有：<br>
+
+*    nc新单据开发<br>
+*    拉单
+*    推单
+*    报表
+*    OA接口<br>
+
+
+        it's the time
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>严格意义上来说，这是我做的第二个项目，引用项目经理的一句话，本身是千万级别的项目，却做成百万级别的单子<br>主要有几个版块<br></p>
+
+<blockquote>
+  <p>工程管理，供应链，采购，核算（费用，收付）以及OA系统对接<br></p>
+</blockquote>
+
+<p>其中工程管理模板全部二开，这套业务是比较不错的，尤其是设计思路，跟具体的字段逻辑，现在想想如果整个细致的方案从构思到实现，如果是我来设计表结构跟ui以及开发文档的话，需要，保守估计需要一个月的时间。<br></p>
+
+<hr>
+
+<p>涉及到的nc技术有：<br></p>
+
+<ul>
+<li>nc新单据开发<br></li>
+<li>拉单</li>
+<li>推单</li>
+<li>报表</li>
+<li><p>OA接口<br></p>
+
+<pre><code>it's the time
+</code></pre></li>
+</ul>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "gemdale.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
